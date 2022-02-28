@@ -1,0 +1,72 @@
+<html>  
+<head>
+<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+<script src="https://js.api.here.com/v3/3.1/mapsjs-core.js"type="text/javascript" charset="utf-8"></script>
+<script src="https://js.api.here.com/v3/3.1/mapsjs-service.js"type="text/javascript" charset="utf-8"></script>
+<script src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://js.api.here.com/v3/3.1/mapsjs-ui.js" type="text/javascript" charset="utf-8"></script>
+<link rel="stylesheet" type="text/css"href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" />
+</head>
+  
+<body style='margin: 0'>
+<div style="width: 100%; height: 100%" id="mapContainer"></div>
+<script>	
+      // Initialize the platform object:
+      var platform = new H.service.Platform({
+        'apikey': 'vl0jQDK2bea-wWkxBm4N8yhrEjvU-rfochR2QMvGb1U'
+      });
+	  
+	   //const lat = 38.985199;
+	   //const long = -76.912216;
+       //var coords = {{ geo|safe }}
+	// Obtain the default map types from the platform object
+      var maptypes = platform.createDefaultLayers();
+
+      // Initialize a map:
+      var map = new H.Map(
+        document.getElementById('mapContainer'),
+        maptypes.raster.terrain.map,
+        {
+          zoom: 10,
+          center: { lat: lat, lng: long }  
+        });
+		
+	// Enable the event system on the map instance:
+	  var mapEvents = new H.mapevents.MapEvents(map);
+	
+	// Add event listener:
+	  map.addEventListener('tap', function(evt) {
+    // Log 'tap' and 'mouse' events:
+      console.log(evt.type, evt.currentPointer.type); 
+});
+
+	// Instantiate the default behavior, providing the mapEvents object:
+	 var behavior = new H.mapevents.Behavior(mapEvents);
+
+	//window.addEventListener('resize',()=> get.ViewProt().resize())
+
+  // ****TO GET MULTIPLE MARKGERS******* remove lines 59 and 62
+  const coords = [[39.9350814, -74.80801389999999], [30.31680799999999, -81.67627700000003], [35.146976, -90.05171159999999], [43.0422204, -87.91025139999999], [33.5077585, -86.81042240000001], [34.0837698, -118.3139575], [41.9099108, -87.6521578], [34.1414633, -80.8896608], [35.22337329999999, -80.8482202], [47.18236479999999, -122.2966347], [36.1511447, -115.3337151], [34.07714539999999, -117.80728690000001], [18.4674181, -66.1112251], [40.252596, -76.914716], [34.005406, -118.3317394], [34.0490969, -117.21661940000001], [39.74102510000001, -75.54994590000001], [36.1688109, -115.1547436], [39.5381012, -77.41332], [25.7312795, -80.26004940000001], [39.9350814, -74.80801389999999], [30.31680799999999, -81.67627700000003], [35.146976, -90.05171159999999], [43.0422204, -87.91025139999999], [33.5077585, -86.81042240000001], [34.0837698, -118.3139575], [41.9099108, -87.6521578], [34.1414633, -80.8896608], [35.22337329999999, -80.8482202], [47.18236479999999, -122.2966347], [36.1511447, -115.3337151], [34.07714539999999, -117.80728690000001], [18.4674181, -66.1112251], [40.252596, -76.914716], [34.005406, -118.3317394], [34.0490969, -117.21661940000001], [39.74102510000001, -75.54994590000001], [36.1688109, -115.1547436], [39.5381012, -77.41332], [25.7312795, -80.26004940000001]]
+
+   coords.forEach((el)=> {
+     map.addObject(new H.map.Marker({lat:el[0], lng: el[1]}));
+   })
+	var marker = new H.map.Marker({ lat: lat, lng: long });
+		
+	// Add the marker to the map:
+	//map.addObject(marker);
+	
+	// Create the default UI:
+	var ui = H.ui.UI.createDefault(map, maptypes);
+		
+// Create an info bubble object at a specific geographic location:
+var bubble = new H.ui.InfoBubble({ lng: 76.0534, lat: 22.9676 }, {
+                content: '<b>Dewas</b>'
+             });
+
+// Add info bubble to the UI:
+ui.addBubble(bubble);
+
+</script>
+</body>
+</html>

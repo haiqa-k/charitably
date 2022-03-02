@@ -1,10 +1,13 @@
 from bs4 import BeautifulSoup
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for
 import requests
 import json
+from json import JSONEncoder
 import webbrowser
 import time
 import mysql.connector
+import toolz
+
 
 db = mysql.connector.connect(
     host = "localhost",
@@ -20,6 +23,7 @@ mycursor = db.cursor()
 #mycursor.execute("DROP TABLE Events") #to delete table
 #mycursor.execute("CREATE TABLE Events(name VARCHAR(150),start_date VARCHAR(20),end_date VARCHAR(20),address VARCHAR(500), street VARCHAR(200), country VARCHAR(50), state VARCHAR(20), postal_code VARCHAR(20), longitude VARCHAR(100), latitude VARCHAR(100),description VARCHAR(500), eventID int PRIMARY KEY AUTO_INCREMENT)") #creating a table inside my database
 
+
 class events: 
     def __init__(self, name, start_date, end_date, address, country, state, street, postal_code, longitude, latitude, description): 
         self.name = name 
@@ -33,15 +37,20 @@ class events:
         self.longitude = longitude
         self.latitude = latitude
         self.description = description
+def encoder_events(event):
+    # if isinstance(event, events):
+    return{'name': event.name, 'start_date': event.start_date, 'end_date': event.end_date, 'address': event.address, 'country': event.country, 'state': event.state, 'street': event.street, 'postal_code':event.postal_code, 'longitude':event.longitude, 'latitude': event.latitude, 'description': event.description}
+    # raise TypeError(f'Object {event} is not of type events')
+
 event_list = []
 
 headers = {'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_2) AppleWebKit/601.3.9 (KHTML, like Gecko) Version/9.0.2 Safari/601.3.9'}
-for i in range (2):
+for i in range (20):
   
   page = str(i)
   url_base = 'https://www.eventbrite.com/d/united-states/charity-and-causes--events/?page='
   url = url_base + page
-  
+
   result=requests.get(url,headers=headers)
   doc=BeautifulSoup(result.text,"html.parser")
   #print(doc)
@@ -66,6 +75,7 @@ for i in range (2):
     state = address.get('addressRegion')
     street = address.get('streetAddress')
     postal_code = address.get('postalCode')
+    print("ZIP code of the event: ",postal_code)
     geo =  location.get('geo')
     latitude = geo.get('latitude')
     longitude = geo.get('longitude')
@@ -101,32 +111,55 @@ for x in event_list:
 
 
 #To list all the events in the database and their count
-mycursor.execute("SELECT * FROM Events")
-count = 0
-for x in mycursor:
-    count += 1
-    print(x)
-print("Total events in database: ", count)
-geo = [] #list to hold the geographical coordinates of each 
-for x in event_list:
-    coordinates = [float(x.latitude), float(x.longitude)]
-    geo.append(coordinates)
-print(geo)
+# mycursor.execute("SELECT * FROM Events")
+# count = 0
+# for x in mycursor:
+#     count += 1
+#     print(x)
+# print("Total events in database: ", count)
 
-name1 = "Atco Battles Alzheimer's 8"
-description1 = "Atco Battles Alzheimer's is a one-day celebration of music to help raise money to combat Alzheimer's and dementia."
-lat1 = 39.9350814
-long1 = -74.80801389999999
-command = '<div><a href="https://www.google.com/search?q=' + name1.replace(" ", "")+'">'+name1+'</a></div>' + '<div>'+description1+'<br />Capacity: 55,097</div>'
-print(command)
+
+
+# geo = [] #list to hold the geographical coordinates of each 
+# for x in event_list:
+#     coordinates = [float(x.latitude), float(x.longitude)]
+#     geo.append(coordinates)
+# print(geo)
+
+
+#toolz.unique returns a generator object without any duplicates from event_list
+unique = list(toolz.unique(event_list, key=lambda x: x.name))
+
 
 app = Flask(__name__, static_url_path='')
-@app.route('/')
-def map_func():
-    return render_template('demo.html')
-@app.route('/events/')
-def events():
-    return render_template('scrape.html', list = event_list)
+
+@app.route('/home/', methods = ["GET", "POST"])
+def home():
+    if request.method == "POST":
+        zipcode = request.form["zipcode"]
+        return redirect(url_for("events", zip = zipcode)) #pass the zipcode to the list view page 
+    else:
+        return render_template('search.html')
+
+@app.route('/map/<zip>')
+def map_func(zip):
+    mylist = []
+    for i in unique:
+        if i.postal_code == zip: #compare the inputted zipcode with all the zipcodes in the event list 
+            k = json.dumps(i, default = encoder_events)
+            mylist.append(k)
+    return render_template('demo.html', list=mylist, zip = zip)
+
+
+@app.route("/<zip>")
+def events(zip):
+    zips = []
+    for i in unique:
+        if i.postal_code == zip: #compare the inputted zipcode with all the zipcodes in the event list 
+            zips.append(i)
+    print(zip)
+    return render_template('scrape.html', list = zips, zip = zip) #only send a list of events of the inputted zipcode
+
 if __name__ == '__main__':
     app.run(debug = True)
 

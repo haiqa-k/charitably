@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" integrity="sha256-h20CPZ0QyXlBuAw7A+KluUYx/3pK+c7lYEpqLTlxjYQ=" crossorigin="anonymous" />
+		<link rel="stylesheet" href="/css/search.css">
+		<title>Landing Page</title>
+		<style>
+		.boxContainer
+		{
+			margin: auto;
+			margin-top: 5%;
+			position: relative;
+			width: 300px;
+			height: 42px;
+			border: 4px solid#36454F;
+			padding: 0px 10px;
+			border-radius: 50px;
+			background:#fff
+		}
+		.elementsContainer
+		{
+			width: 100%;
+			height: 100%;
+			vertical-align: middle;
+		}
+		.search
+		{
+			border: none;
+			height: 100%;
+			width: 100%;
+			padding: 0px 5px;
+			border-radius: 50px;
+			font-size: 18px;
+			font-family: "Nunito";
+			color: #36454F;
+			font-weight: 500;
+		}
+		.search:focus
+		{
+			outline: none;
+		}
+		.material-icons
+		{
+			font-size: 26;
+			color: #36454F;
+		}
+		</style>
+
+	</head>
+	<body>
+		<section class="showcase">
+			<div class="video-container">
+			<!-- 	<video src="https://traversymedia.com/downloads/video.mov" autoplay muted loop></video> -->
+			<video src="/img/map.mp4" autoplay muted loop></video>
+			</div>
+			<div class="content">
+				<h1><strong>CHARITABLY</strong></h1>
+				<h3>Enter a ZIP code to find charity events in its vicinity</h3>
+				<form action="#" method="post">
+					<div class="boxContainer">
+					<table class="elementsContainer">
+					<tr>
+						<td>
+						<input type="text" placeholder="Enter ZIP Code" class="search" name="zipcode">
+						</td>
+						<td>
+							<button type="submit"><a href="#"><i class ="material-icons">search</i></button>
+						</a>
+						</td>
+					</tr>
+					</table>
+				</div>
+				</form>
+				
+			</div>
+
+		</section>
+
+		<section id="about">
+
+			<h1>Charity of the Month</h1>
+
+			<div class="social">
+			<!-- <a href="https://twitter.com/traversymedia" target="_blank"><i class="fab fa-twitter fa-3x"></i></a>
+				<a href="https://facebook.com/traversymedia" target="_blank"><i class="fab fa-facebook fa-3x"></i></a>
+				<a href="https://github.com/bradtraversy" target="_blank"><i class="fab fa-github fa-3x"></i></a>
+				<a href="https://www.linkedin.com/in/bradtraversy" target="_blank"><i class="fab fa-linkedin fa-3x"></i></a> -->
+			<a href="http://bit.ly/RazomPayPal">Donate to <strong><u>Razom for Ukraine</u></strong>, which is a non-profit that is currently purchasing medical supplies for people affected by the invasion of Ukraine</a>
+			</div>
+			<h2>About Charitably</h2>
+			<p>
+				Charitably is a web application with the aim to build greater reach for charity
+				causes and events near you! Enter a ZIP code and receive a list of all the 
+				events that you can participate in for a good cause.
+			</p>
+
+		</section>
+	</body>
+</html>

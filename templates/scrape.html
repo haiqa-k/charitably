@@ -6,6 +6,98 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <title>Charity Events & Causes Near Me</title>
+    <style>
+      td a {
+        width: 100%;
+        display: block;
+      }
+      .heading{
+       text-align: center;
+      }
+
+      .button {
+        display: flex;
+        height: 50px;
+        padding: 0;
+        background: #6f4518;
+        border: none;
+        outline: none;
+        border-radius: 5px;
+        overflow: hidden;
+        font-family: "Quicksand", sans-serif;
+        font-size: 16px;
+        font-weight: 500;
+        cursor: pointer;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+      }
+
+      .button:hover {
+        background: #603808;
+      }
+
+      .button:active {
+        background: #583101;
+      }
+
+      .button__text,
+      .button__icon {
+        display: inline-flex;
+        align-items: center;
+        padding: 0 24px;
+        color: #fff;
+        height: 100%;
+      }
+
+      .button__icon {
+        font-size: 1.5em;
+        background: rgba(0, 0, 0, 0.08);
+      }
+
+      .button2 {
+        display: flex;
+        height: 50px;
+        padding: 0;
+        background: #6f4518;
+        border: none;
+        outline: none;
+        border-radius: 5px;
+        overflow: hidden;
+        font-family: "Quicksand", sans-serif;
+        font-size: 16px;
+        font-weight: 500;
+        cursor: pointer;
+        position: absolute;
+        top: 10px;
+        left: 10px;
+      }
+
+      .button2:hover {
+        background: #603808;
+      }
+
+      .button2:active {
+        background: #583101;
+      }
+
+      .button__text2,
+      .button__icon2 {
+        display: inline-flex;
+        align-items: center;
+        padding: 0 24px;
+        color: #fff;
+        height: 100%;
+      }
+
+      .button__icon2 {
+        font-size: 1.5em;
+        background: rgba(0, 0, 0, 0.08);
+      }
+      .container{
+        color: white;
+      }
+    </style>
 
     <!-- Bootstrap -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
@@ -17,16 +109,49 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
   </head>
-  <body>
-    <div class="page-header">
-      <h1>CHARITABLY</h1>
-      <p>Charity Events & Causes Near You</p>
-  </div>
+  <body style="background-color:#2F4F4F; margin:0;padding:0;">
+
+    <div class="heading">
+    <!--   <div class="page-header"> -->
+        <h1 style="text-align: center; color: white;">CHARITABLY</h1>
+        <p style="text-align: center;color: white;">Charity Events & Causes Near You</p>
+    <!--   </div> -->
+      <script src="https://unpkg.com/ionicons@5.4.0/dist/ionicons.js"></script>
+<!--       <script type="text/javascript">
+        var zip_code = {{zip}}
+        console.log("scrape zipcode", zip_code)
+      </script> -->
+      <script type="text/javascript">
+        
+        document.write('<a href="{{ url_for('map_func', zip = zip)}}"><button type="button" class="button"><span class="button__text">Map View</span><span class="button__icon"><ion-icon name="map-outline"></ion-icon></span></button></a>');
+      </script>
+ <!--      <a window.location.href="{{ url_for('map_func', zip = zip_code)}}">
+        <button type="button" class="button">
+        <span class="button__text">Map View</span>
+        <span class="button__icon">
+          <ion-icon name="map-outline"></ion-icon>
+        </span>
+      </button>
+      <a>
+ -->
+      <a href="{{ url_for('home') }}">
+      <button type="button2" class="button2">
+        <span class="button__text2">Search ZIP code</span>
+        <span class="button__icon2">
+          <ion-icon name="search-outline"></ion-icon>
+        </span>
+      </button>
+      <a>
+
     <p><br/><br/></p>
+
+    </div>
+    
+
     <div class="container">
-      <table class="table table-bordered table-striped table-hover">
+      <table class="table table-bordered table-striped table-hover" style="width: 100%; height: 100%;">
         <thead>
-        <tr>
+        <tr style="background-color:#696969;">
           <th>Name</th>
           <th>Start Date</th>
           <th>End Date</th>
@@ -35,7 +160,7 @@
           <th>Summary</th>
         </tr>
         {% for item in list %}
-        <tr>
+        <tr style="background-color:#808080;">
           <td>{{item.name}}</td>
           <td>{{item.start_date}}</td>
           <td>{{item.end_date}}</td>

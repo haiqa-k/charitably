@@ -6,7 +6,7 @@
     <title>Opening an Infobubble on a Mouse Click</title>
     <link rel="stylesheet" type="text/css" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" />
     <link rel="stylesheet" type="text/css" href="/css/demo.css" />
-    <link rel="stylesheet" type="text/css" href="/css/styles.css" />
+<!--     <link rel="stylesheet" type="text/css" href="/css/styles.css" /> -->
     <link rel="stylesheet" type="text/css" href="/css/template.css" />
     <script type="text/javascript" src='/js/test-credentials.js'></script>    
     <script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-core.js"></script>
@@ -14,22 +14,42 @@
     <script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"></script>
     <script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
   </head>
-  <body id="markers-on-the-map">
-    <div class="page-header">
-        <h1 style="font-family: Copperplate, fantasy; color: #ffe100; font-size: 60px; text-shadow: 5px 5px 5px #d7a6b7; -webkit-text-stroke-width: 3px;
-        -webkit-text-stroke-color: black;text-align:center;">C H A R I T A B L Y</h1>
-        <!-- <p>Open an infobubble when a marker is clicked</p> -->
-    </div>
-    <!-- <p>This example displays a map with two markers showing the position 
-      of <b>Liverpool</b> and <b>Manchester City</b> football clubs. Clicking on a 
-      marker opens an infobubble which holds HTML content related to the marker.</p> -->
-    <!-- <div id="map"></div> -->
-    <!-- <div id="map" style="width: 100vw; height: 100vh" > -->
-    <div id="map" style="width: 1400px; height: 700px" >
+  <body id="markers-on-the-map" style="background-color:#2F4F4F; margin:0;padding:0;">
+<!--     <div class="page-header">
+        <h1 style="font-family: Copperplate, fantasy; color: #B0C4DE; font-size: 60px; text-shadow: 6px 6px 6px #d7a6b7; -webkit-text-stroke-width: 3px;
+        -webkit-text-stroke-color: #008080;text-align:center;">C H A R I T A B L Y</h1>
+        <p>Open an infobubble when a marker is clicked</p>
+    </div> -->
+        <div class="heading">
+<!--       <div class="page-header"> -->
+        <h1 style="text-align: center; color: white;">CHARITABLY</h1>
+        <p style="text-align: center;color: white;">Charity Events & Causes Near You</p>
+ <!--      </div> -->
+      <script src="https://unpkg.com/ionicons@5.4.0/dist/ionicons.js"></script>
+      <script type="text/javascript">
+        document.write('<a href="{{ url_for('events', zip =zip)}}"><button type="button" class="button"><span class="button__text">List View</span><span class="button__icon"><ion-icon name="list-outline"></ion-icon></span></button></a>');
+      </script>
 
-    <!-- <h3>Code</h3> -->
-    <!-- <p>Infobubble opens on <code>tap</code> event, event delegation is used to add event listener to the group that holds markers. 
-      <code>setData/getData</code> methods on the map objects are used to bind custom data.</p> -->
+      <a href="{{ url_for('home') }}">
+      <button type="button2" class="button2">
+        <span class="button__text2">Search ZIP code</span>
+        <span class="button__icon2">
+          <ion-icon name="search-outline"></ion-icon>
+        </span>
+      </button>
+      <a>
+
+    <p><br/><br/></p>
+
+    </div>
+
+    <!-- <div id="map"></div> -->
+<!--     <div id="map" style="width: 100vw; height: 80vh" > -->
+    <div id="map" style="width: 1400px; height: 700px" >
+    <script type="text/javascript">
+        // const eventList = JSON.parse('{{list}}')
+        var eventList = {{list|safe}}
+    </script>
     <script type="text/javascript" src='/js/demo.js'></script>
   </body>
 </html>

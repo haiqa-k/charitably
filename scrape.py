@@ -151,7 +151,7 @@ def map_func(zip):
     return render_template('demo.html', list=mylist, zip = zip)
 
 
-@app.route("/<zip>")
+@app.route("/list/<zip>")
 def events(zip):
     zips = []
     for i in unique:

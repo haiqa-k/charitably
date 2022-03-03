@@ -7,9 +7,14 @@
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <title>Charity Events & Causes Near Me</title>
     <style>
-      td a {
+      a:link 
+      { color: white; }
+      td a { 
+        display: block; 
         width: 100%;
-        display: block;
+      }
+      .link:hover{
+        color:  #00FF00;;
       }
       .heading{
        text-align: center;
@@ -19,7 +24,7 @@
         display: flex;
         height: 50px;
         padding: 0;
-        background: #6f4518;
+        background: #232b2b;
         border: none;
         outline: none;
         border-radius: 5px;
@@ -34,11 +39,11 @@
       }
 
       .button:hover {
-        background: #603808;
+        background: #353839;
       }
 
       .button:active {
-        background: #583101;
+        background: #232b2b;
       }
 
       .button__text,
@@ -59,7 +64,7 @@
         display: flex;
         height: 50px;
         padding: 0;
-        background: #6f4518;
+        background: #232b2b;
         border: none;
         outline: none;
         border-radius: 5px;
@@ -74,11 +79,11 @@
       }
 
       .button2:hover {
-        background: #603808;
+        background: #353839;
       }
 
       .button2:active {
-        background: #583101;
+        background: #232b2b;
       }
 
       .button__text2,
@@ -109,7 +114,7 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
   </head>
-  <body style="background-color:#2F4F4F; margin:0;padding:0;">
+  <body style="background-color:#3b444b; margin:0;padding:0;">
 
     <div class="heading">
     <!--   <div class="page-header"> -->
@@ -151,22 +156,27 @@
     <div class="container">
       <table class="table table-bordered table-striped table-hover" style="width: 100%; height: 100%;">
         <thead>
-        <tr style="background-color:#696969;">
-          <th>Name</th>
-          <th>Start Date</th>
-          <th>End Date</th>
-          <th>Address</th>
-          <th>State</th>
-          <th>Summary</th>
+        <tr style="background-color:#353839;">
+          <th class="text-center">Name</th>
+          <th class="text-center">Start Date</th>
+          <th class="text-center">End Date</th>
+          <th class="text-center">Address</th>
+          <th class="text-center">State</th>
+          <th class="text-center">Summary</th>
         </tr>
         {% for item in list %}
-        <tr style="background-color:#808080;">
-          <td>{{item.name}}</td>
-          <td>{{item.start_date}}</td>
+        <tr style="background-color:#5c5c5c;">
+          <td><u><a class="link" href="{{item.url}}">{{item.name}}</a></u></td>
+          <td><a href="{{item.url}}">{{item.start_date}}</a></td>
+          <td><a href="{{item.url}}">{{item.end_date}}</a></td>
+          <td><a href="{{item.url}}">{{item.street}}</a></td>
+          <td><a href="{{item.url}}">{{item.state}}</a></td>
+          <td><a href="{{item.url}}">{{item.description}}</a></td>
+          <!-- <td>{{item.start_date}}</td>
           <td>{{item.end_date}}</td>
           <td>{{item.street}}</td>
           <td>{{item.state}}</td>
-          <td>{{item.description}}</td>
+          <td>{{item.description}}</td> -->
         </tr>
         {% endfor %}
         </thead>

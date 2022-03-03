@@ -20,13 +20,15 @@ mycursor = db.cursor()
 
 #mycursor.execute("CREATE DATABASE charitably") #The database "charitably" is created
 
-#mycursor.execute("DROP TABLE Events") #to delete table
-#mycursor.execute("CREATE TABLE Events(name VARCHAR(150),start_date VARCHAR(20),end_date VARCHAR(20),address VARCHAR(500), street VARCHAR(200), country VARCHAR(50), state VARCHAR(20), postal_code VARCHAR(20), longitude VARCHAR(100), latitude VARCHAR(100),description VARCHAR(500), eventID int PRIMARY KEY AUTO_INCREMENT)") #creating a table inside my database
+# mycursor.execute("DROP TABLE Events") #to delete table
+# mycursor.execute("CREATE TABLE Events(name VARCHAR(150), url VARCHAR(500), start_date VARCHAR(20),end_date VARCHAR(20),address VARCHAR(500), street VARCHAR(200), country VARCHAR(50), state VARCHAR(20), postal_code VARCHAR(20), longitude VARCHAR(100), latitude VARCHAR(100),description VARCHAR(500), eventID int PRIMARY KEY AUTO_INCREMENT)") #creating a table inside my database
+# mycursor.execute("CREATE TABLE AllEvents(name VARCHAR(150), url VARCHAR(500), start_date VARCHAR(20),end_date VARCHAR(20),address VARCHAR(500), street VARCHAR(200), country VARCHAR(50), state VARCHAR(20), postal_code VARCHAR(20), longitude VARCHAR(100), latitude VARCHAR(100),description VARCHAR(500), eventID int PRIMARY KEY AUTO_INCREMENT)") #creating a table inside my database
 
 
 class events: 
-    def __init__(self, name, start_date, end_date, address, country, state, street, postal_code, longitude, latitude, description): 
+    def __init__(self, name, url, start_date, end_date, address, country, state, street, postal_code, longitude, latitude, description): 
         self.name = name 
+        self.url = url
         self.start_date = start_date
         self.end_date = end_date
         self.address = address
@@ -39,19 +41,19 @@ class events:
         self.description = description
 def encoder_events(event):
     # if isinstance(event, events):
-    return{'name': event.name, 'start_date': event.start_date, 'end_date': event.end_date, 'address': event.address, 'country': event.country, 'state': event.state, 'street': event.street, 'postal_code':event.postal_code, 'longitude':event.longitude, 'latitude': event.latitude, 'description': event.description}
+    return{'name': event.name, 'url': event.url, 'start_date': event.start_date, 'end_date': event.end_date, 'address': event.address, 'country': event.country, 'state': event.state, 'street': event.street, 'postal_code':event.postal_code, 'longitude':event.longitude, 'latitude': event.latitude, 'description': event.description}
     # raise TypeError(f'Object {event} is not of type events')
 
 event_list = []
 
 headers = {'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_2) AppleWebKit/601.3.9 (KHTML, like Gecko) Version/9.0.2 Safari/601.3.9'}
-for i in range (20):
+for i in range (2):
   
   page = str(i)
   url_base = 'https://www.eventbrite.com/d/united-states/charity-and-causes--events/?page='
-  url = url_base + page
+  url_ = url_base + page
 
-  result=requests.get(url,headers=headers)
+  result=requests.get(url_,headers=headers)
   doc=BeautifulSoup(result.text,"html.parser")
   #print(doc)
   tag = doc.find_all("script") #returns all the <script> tags
@@ -64,6 +66,7 @@ for i in range (20):
 
   for item in json_list:
     name = item['name']
+    url = "https://www.google.com/search?q="+name.replace(" ", "");
     print("Name of the event: ",name)
     start_date = item['startDate']
     print("Start data: ",item['startDate'])
@@ -82,7 +85,7 @@ for i in range (20):
     print("Address: ", street, ", ", state, ", ",country, ", ",postal_code)
     description = item['description']
     print("Description: ",description)
-    event_list.append(events(name, start_date, end_date, address, country, state, street, postal_code, longitude, latitude, description))
+    event_list.append(events(name, url, start_date, end_date, address, country, state, street, postal_code, longitude, latitude, description))
     print("**********************************\n")
 
 #store the data to the table Events in the database Charitably
@@ -93,8 +96,9 @@ for x in event_list:
     mycursor.fetchall()
     row_count = mycursor.rowcount
     if row_count == 0: #if event is not present in the table then row_count should be 0
-        sql_command = """INSERT INTO Events(name, start_date, end_date, address, street, country, state, postal_code, longitude, latitude, description) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+        sql_command = """INSERT INTO Events(name, url, start_date, end_date, address, street, country, state, postal_code, longitude, latitude, description) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
         name = str(x.name)
+        url = str(x.url)
         start_date = str(x.start_date)
         end_date = str(x.end_date)
         address = str(x.address)
@@ -105,7 +109,7 @@ for x in event_list:
         longitude = str(x.longitude)
         latitude = str(x.latitude)
         description = str(x.description)
-        values = [(name, start_date, end_date, address, street, country, state, postal_code, longitude, latitude, description)]
+        values = [(name, url, start_date, end_date, address, street, country, state, postal_code, longitude, latitude, description)]
         mycursor.executemany(sql_command, values)
         db.commit()
 

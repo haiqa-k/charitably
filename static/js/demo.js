@@ -52,7 +52,7 @@ function addInfoBubble(map) {
     long_constant = obj["longitude"];
     var start_date = obj["start_date"];
     // var obj = [name, url, description, latitude, longitude, start_date]
-    var obj = [name, parseFloat(latitude), parseFloat(longitude), url]
+    var obj = [name, parseFloat(latitude), parseFloat(longitude), url, description, start_date]
     list[i] = obj
 
 
@@ -68,7 +68,7 @@ function addInfoBubble(map) {
         lat_ = parseFloat(el[1])
         long_ = parseFloat(el[2])
           addMarkerToGroup(group, {lat: lat_, lng: long_},
-    '<div><a href="'+el[3]+'">'+el[0]+'</a></div>');
+    '<div><a href="'+el[3]+'">'+el[0]+'</a></div>'+'<div>'+el[4]+'<br /><strong>Date:</strong> '+el[5]+'</div>');
     map.addObject(group);
     });
     console.log("type of coords: ", typeof coords)

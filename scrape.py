@@ -1,3 +1,4 @@
+
 from bs4 import BeautifulSoup
 from flask import Flask, render_template, request, redirect, url_for
 import requests
@@ -47,7 +48,7 @@ def encoder_events(event):
 event_list = []
 
 headers = {'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_2) AppleWebKit/601.3.9 (KHTML, like Gecko) Version/9.0.2 Safari/601.3.9'}
-for i in range (2):
+for i in range (40):
   
   page = str(i)
   url_base = 'https://www.eventbrite.com/d/united-states/charity-and-causes--events/?page='
@@ -66,7 +67,7 @@ for i in range (2):
 
   for item in json_list:
     name = item['name']
-    url = "https://www.google.com/search?q="+name.replace(" ", "");
+    url = "https://www.google.com/search?q="+name.replace(" ", "+");
     print("Name of the event: ",name)
     start_date = item['startDate']
     print("Start data: ",item['startDate'])
@@ -131,10 +132,19 @@ for x in event_list:
 # print(geo)
 
 
+
+
 #toolz.unique returns a generator object without any duplicates from event_list
 unique = list(toolz.unique(event_list, key=lambda x: x.name))
 
-
+z=[]
+for i in unique:
+    z.append(i.postal_code)
+l = []
+for k in z:
+    l.append([k, z.count(k)])
+print(l)
+    
 app = Flask(__name__, static_url_path='')
 
 @app.route('/home/', methods = ["GET", "POST"])

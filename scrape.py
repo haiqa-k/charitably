@@ -8,6 +8,11 @@ import webbrowser
 import time
 import mysql.connector
 import toolz
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+from serpapi import GoogleSearch #pip install google-search-results
+from geopy.geocoders import Nominatim #pip install geopy
 
 
 db = mysql.connector.connect(
@@ -48,7 +53,8 @@ def encoder_events(event):
 event_list = []
 
 headers = {'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_2) AppleWebKit/601.3.9 (KHTML, like Gecko) Version/9.0.2 Safari/601.3.9'}
-for i in range (40):
+start = time.time()
+for i in range (2):
   
   page = str(i)
   url_base = 'https://www.eventbrite.com/d/united-states/charity-and-causes--events/?page='
@@ -89,6 +95,150 @@ for i in range (40):
     event_list.append(events(name, url, start_date, end_date, address, country, state, street, postal_code, longitude, latitude, description))
     print("**********************************\n")
 
+end = time.time()
+print("Execution time: ", end-start)
+
+
+# geo = [] #list to hold the geographical coordinates of each 
+# for x in event_list:
+#     coordinates = [float(x.latitude), float(x.longitude)]
+#     geo.append(coordinates)
+# print(geo)
+
+
+####################################GOOGLE SEARCH EVENTS USING BS4
+
+
+headers = {
+    "User-Agent":
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+    "(KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36 Edge/18.19582"
+}
+
+
+response = requests.get("https://serpapi.com/searches/e3d8c5d12dc868b5/623ff90dd5a531c3a4f267b7.html", headers=headers)
+soup = BeautifulSoup(response.text, 'lxml')
+
+events_data = []
+num = 0
+for event in soup.select('.PaEvOc'):
+    name = event.select_one('.YOGjf').text
+    #link = event.select_one('.odIJnf a')['href']
+    day = event.select_one('.gsrt.v14Sh.OaCVOb .UIaQzd').text
+    month = event.select_one('.gsrt.v14Sh.OaCVOb .wsnHcb').text
+    when = event.select_one('.cEZxRc:nth-child(1)').text
+    address_street = event.select_one('.cEZxRc:nth-child(2)').text
+    address_city = event.select_one('.cEZxRc:nth-child(3)').text
+    date = day+" "+month
+    print("Name: ", name)
+    print("Date: ", date)
+    print("When: ", when)
+    print("Street: ", address_street)
+    print("City: ", address_city)
+    num = num+1
+print(num)
+
+
+####################GOOGLE SEARCH EVENTS
+
+start = 0 #this is an offset variable used to iterate through the events
+#for some reason, one search is retreiving only 10 results
+#therefore, to retreive more events, I am doing multiple searches
+#and each search is offset by 10 so that the previously retreived events
+#are not retreived again
+count = 0 #variable used to keep a count of the number of events retreived
+try:
+    while (start < 50): #the number acts as a cap for the total events retreived
+        params = {
+            "api_key": "85c26552886cb11adff784f9668a7b3b553122ff2d56286555dedb2f3dea0e0e",
+            "engine": "google_events",
+            "q": "Charity", #query = charity events
+            "gl": "us", #location = U.S.
+            "hl": "en", #language = english
+            "start": start,
+            "device": "desktop"
+        }
+        search = GoogleSearch(params)
+        results = search.get_dict()
+
+        geolocator = Nominatim(user_agent="geoapiExercises")
+        #print(results)
+
+        for item in results['events_results']:
+            #print(json.dumps(item, indent=2, ensure_ascii=False))
+            name = item['title']
+            try:
+                date = item['date']
+                start_date = date.get('start_date')
+            except:
+                date = ""
+            try:
+                address = item['address']
+                street = address[0]
+                city = address[1]
+            except:
+                address = ""
+                street = ""
+                city = ""
+            try:
+                url = item['link']
+            except:
+                url = ""
+            try:
+                description = item['description']
+            except:
+                description = ""
+            
+            location = geolocator.geocode(city) #using python geopy
+            try:
+                data = location.raw
+                latitude = data['lat']
+                longitude = data['lon']
+                location = geolocator.reverse((latitude, longitude)) #using geopy to retrive zipcode using coordinates
+                try:
+                    postal_code = location.raw['address']['postcode']
+                    print(postal_code)
+                except:
+                    postal_code = "" #for certain locations, the return is None so to handle that
+            except:
+                latitude = ""
+                longitude = ""
+                postal_code = ""
+            end_date = ""
+            try:
+                country = location.address.split(",")[-1]
+            except:
+                country = ""
+            try:
+                state = location.address.split(",")[-3]
+            except:
+                state = ""
+            count = count + 1
+            print(count, "). ", name)
+            print(postal_code)
+            event_list.append(events(name, url, start_date, end_date, address, country, state, street, postal_code, longitude, latitude, description))
+        print(count)
+        start = start+10 #offsetting by 10 so that the next search takes skips the 10 events previously retreived
+except:
+    print("Total Events Recorded: ",count)
+
+
+print("Event list length: ",len(event_list))
+for i in range(len(event_list)):
+    print(i, event_list[i].name, event_list[i].postal_code)
+
+
+#toolz.unique returns a generator object without any duplicates from event_list
+unique = list(toolz.unique(event_list, key=lambda x: x.name))
+
+#making sure that all the events in the list are unique (avoiding repeated events)
+z=[]
+for i in unique:
+    z.append(i.postal_code)
+l = []
+for k in z:
+    l.append([k, z.count(k)])
+
 #store the data to the table Events in the database Charitably
 for x in event_list:
     check_name = [x.name]
@@ -123,28 +273,6 @@ for x in event_list:
 #     print(x)
 # print("Total events in database: ", count)
 
-
-
-# geo = [] #list to hold the geographical coordinates of each 
-# for x in event_list:
-#     coordinates = [float(x.latitude), float(x.longitude)]
-#     geo.append(coordinates)
-# print(geo)
-
-
-
-
-#toolz.unique returns a generator object without any duplicates from event_list
-unique = list(toolz.unique(event_list, key=lambda x: x.name))
-
-z=[]
-for i in unique:
-    z.append(i.postal_code)
-l = []
-for k in z:
-    l.append([k, z.count(k)])
-print(l)
-    
 app = Flask(__name__, static_url_path='')
 
 @app.route('/home/', methods = ["GET", "POST"])

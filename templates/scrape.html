@@ -4,7 +4,10 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    
+
     <title>Charity Events & Causes Near Me</title>
     <style>
       a:link 
@@ -15,6 +18,9 @@
       }
       .link:hover{
         color:  #00FF00;;
+      }
+      a:visited{
+        color:white;
       }
       .heading{
        text-align: center;
@@ -154,7 +160,7 @@
     
 
     <div class="container">
-      <table class="table table-bordered table-striped table-hover" style="width: 100%; height: 100%;">
+      <table class="table table-bordered table-striped table-hover sortable" style="width: 100%; height: 100%;">
         <thead>
         <tr style="background-color:#353839;">
           <th class="text-center">Name</th>
@@ -167,16 +173,11 @@
         {% for item in list %}
         <tr style="background-color:#5c5c5c;">
           <td><u><a class="link" href="{{item.url}}">{{item.name}}</a></u></td>
-          <td><a href="{{item.url}}">{{item.start_date}}</a></td>
-          <td><a href="{{item.url}}">{{item.end_date}}</a></td>
-          <td><a href="{{item.url}}">{{item.street}}</a></td>
-          <td><a href="{{item.url}}">{{item.state}}</a></td>
-          <td><a href="{{item.url}}">{{item.description}}</a></td>
-          <!-- <td>{{item.start_date}}</td>
+          <td>{{item.start_date}}</td>
           <td>{{item.end_date}}</td>
           <td>{{item.street}}</td>
           <td>{{item.state}}</td>
-          <td>{{item.description}}</td> -->
+          <td>{{item.description}}</td>
         </tr>
         {% endfor %}
         </thead>

@@ -1,6 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <script>
+        //Function to show an alert if no events are present for the requested ZIP code
+        function onLoadPage(){
+          if ($('#sortable tr').length == 1) {
+            alert("Oops! No events to display for this ZIP code :(");
+          }
+        }
+        //Function that filters the dates from closest date to farthest
+        function sortByAsc(c) {
+          rows = document.getElementById("sortable").rows.length; // num of rows
+          columns = document.getElementById("sortable").rows[0].cells.length; // num of columns
+          arrTable = [...Array(rows)].map(e => Array(columns)); // create an empty 2d array
+
+          for (ro=0; ro<rows; ro++) { // cycle through rows
+              for (co=0; co<columns; co++) { // cycle through columns
+                  // assign the value in each row-column to a 2d array by row-column
+                  arrTable[ro][co] = document.getElementById("sortable").rows[ro].cells[co].innerHTML;
+              }
+          }
+
+          th = arrTable.shift(); // remove the header row from the array, and save it
+          
+          // different column is clicked, so sort by the new column
+          arrTable.sort(
+            function (a, b) {
+              if (a[c] === b[c]) {
+                return 0;
+              } else {
+                return (a[c] < b[c]) ? -1 : 1;
+                }
+            }
+              );
+          
+
+          arrTable.unshift(th); // put the header back in to the array
+
+          // cycle through rows-columns placing values from the array back into the html table
+          for (ro=0; ro<rows; ro++) {
+              for (co=0; co<columns; co++) {
+                  document.getElementById("sortable").rows[ro].cells[co].innerHTML = arrTable[ro][co];
+              }
+          }
+      }
+      //Function that filters the dates from farthest date to closest
+      function sortByDsc(c) {
+          rows = document.getElementById("sortable").rows.length; // num of rows
+          columns = document.getElementById("sortable").rows[0].cells.length; // num of columns
+          arrTable = [...Array(rows)].map(e => Array(columns)); // create an empty 2d array
+
+          for (ro=0; ro<rows; ro++) { // cycle through rows
+              for (co=0; co<columns; co++) { // cycle through columns
+                  // assign the value in each row-column to a 2d array by row-column
+                  arrTable[ro][co] = document.getElementById("sortable").rows[ro].cells[co].innerHTML;
+              }
+          }
+
+          th = arrTable.shift(); // remove the header row from the array, and save it
+          
+          // different column is clicked, so sort by the new column
+          arrTable.sort(
+            function (a, b) {
+              if (a[c] === b[c]) {
+                return 0;
+              } else {
+                return (a[c] > b[c]) ? -1 : 1;
+                }
+            }
+              );
+          
+
+          arrTable.unshift(th); // put the header back in to the array
+
+          // cycle through rows-columns placing values from the array back into the html table
+          for (ro=0; ro<rows; ro++) {
+              for (co=0; co<columns; co++) {
+                  document.getElementById("sortable").rows[ro].cells[co].innerHTML = arrTable[ro][co];
+              }
+          }
+      }
+    </script>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -108,6 +188,54 @@
       .container{
         color: white;
       }
+
+      /* Dropdown Button */
+    .dropbtn {
+      /*background-color: #04AA6D;*/
+      background: #232b2b;
+      color: white;
+      padding: 10px;
+      font-size: 16px;
+      border: none;
+    }
+
+    /* The container <div> - needed to position the dropdown content */
+    .dropdown {
+      position: relative;
+      display: inline-block;
+      left: 1235px;
+      bottom: 10px;
+   /*   padding-left: 1235px;
+      padding-right: 350px;
+      padding-bottom: 16px;*/
+    }
+
+    /* Dropdown Content (Hidden by Default) */
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: #f1f1f1;
+      min-width: 160px;
+      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+      z-index: 1;
+    }
+
+    /* Links inside the dropdown */
+    .dropdown-content a {
+      color: black;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+    }
+
+    /* Change color of dropdown links on hover */
+    .dropdown-content a:hover {background-color: #ddd;}
+
+    /* Show the dropdown menu on hover */
+    .dropdown:hover .dropdown-content {display: block;}
+
+    /* Change the background color of the dropdown button when the dropdown content is shown */
+    .dropdown:hover .dropbtn {background-color: #353839;}
     </style>
 
     <!-- Bootstrap -->
@@ -120,7 +248,7 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
   </head>
-  <body style="background-color:#3b444b; margin:0;padding:0;">
+  <body style="background-color:#3b444b; margin:0;padding:0;" onLoad="onLoadPage()">
 
     <div class="heading">
     <!--   <div class="page-header"> -->
@@ -157,10 +285,19 @@
     <p><br/><br/></p>
 
     </div>
-    
+
+
+
+  <div class="dropdown">
+    <button class="dropbtn">Filter</button>
+    <div class="dropdown-content">
+      <a href="#" onclick="sortByAsc(1)">Nearest to Farthest Date</a>
+      <a href="#" onclick="sortByDsc(1)">Farthest to Nearest Date</a>
+    </div>
+  </div>
 
     <div class="container">
-      <table class="table table-bordered table-striped table-hover sortable" style="width: 100%; height: 100%;">
+      <table id="sortable" class="table table-bordered table-striped table-hover sortable" style="width: 100%; height: 100%;">
         <thead>
         <tr style="background-color:#353839;">
           <th class="text-center">Name</th>

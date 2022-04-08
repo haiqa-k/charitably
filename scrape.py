@@ -363,7 +363,7 @@ def google_events_SERP(max):
 
 # #Calling the functions to retrive events and collecting them in one list
 event_list = eventbrite_events(1)
-event_list1 = google_events_SERP(0)
+event_list1 = google_events_SERP(1)
 event_list.extend(event_list1)
 print("Event list length: ",len(event_list))
 for i in range(len(event_list)):
